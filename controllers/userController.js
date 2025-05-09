@@ -387,12 +387,17 @@ export const getUserVisitMemos = async (req, res) => {
     try {
       const { userId } = req.body;
       
-      // Find active memos for this user using MongoDB ObjectId
+      // First get the user's patientId
+      const user = await userModel.findById(userId);
+      if (!user) {
+        return res.json({ success: false, message: "User not found" });
+      }
+      
+      // Find active memos for this user using patientId
       const memos = await visitMemoModel.find({
-        patientId: userId,
+        patientId: user.patientId,
         status: "active"
       })
-      .populate('patientId') // This will populate user details
       .sort({ createdAt: -1 });
       
       // For each memo, get the latest status of each department visit
@@ -403,9 +408,22 @@ export const getUserVisitMemos = async (req, res) => {
         for (let i = 0; i < memoObj.departments.length; i++) {
           const dept = memoObj.departments[i];
           if (dept.visitId) {
-            const visit = await departmentVisitModel.findById(dept.visitId);
-            if (visit) {
-              memoObj.departments[i].status = visit.status;
+            try {
+              // Try to find visit without assuming ObjectId
+              const visit = await departmentVisitModel.findOne({ 
+                $or: [
+                  { _id: dept.visitId },
+                  { visitId: dept.visitId }
+                ]
+              });
+              
+              if (visit) {
+                memoObj.departments[i].status = visit.status;
+              }
+            } catch (err) {
+              console.log(`Error fetching visit status: ${err.message}`);
+              // Continue processing other departments even if one fails
+              continue;
             }
           }
         }
@@ -418,5 +436,5 @@ export const getUserVisitMemos = async (req, res) => {
       console.log(error);
       res.json({ success: false, message: error.message });
     }
-  };
+};
 
