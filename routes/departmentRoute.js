@@ -44,6 +44,7 @@ departmentRouter.get("/memo/:id", getVisitMemoById);
 departmentRouter.put("/memo/:id/update", authUser, updateVisitMemo);
 departmentRouter.get("/memo/user/:userId", authUser, getUserMemos);
 departmentRouter.put("/memo/:id/read", authUser, markMemoAsRead);
+departmentRouter.put("/visit-memos/:id", updateVisitMemo); // Add this new route
 
 // Test management routes
 departmentRouter.get("/tests/list", getAllTests);
