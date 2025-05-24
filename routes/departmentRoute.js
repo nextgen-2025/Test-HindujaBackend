@@ -41,8 +41,8 @@ departmentRouter.put("/visit/:visitId/status", updateVisitStatus);
 departmentRouter.get("/visit-memos/all",  getAllVisitMemos);
 departmentRouter.post("/memo/create", authAdmin, createVisitMemo);
 departmentRouter.get("/memo/:id", getVisitMemoById);
-departmentRouter.put("/memo/:id/update", authUser, updateVisitMemo);
-departmentRouter.get("/memo/user/:userId", getUserMemos);
+departmentRouter.put("/memo/:id/update", updateVisitMemo);
+departmentRouter.get("/memo/user/:userId", authUser, getUserMemos);
 departmentRouter.put("/memo/:id/read", authUser, markMemoAsRead);
 departmentRouter.put("/visit-memos/:id", updateVisitMemo); // Add this new route
 
