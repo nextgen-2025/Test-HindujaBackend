@@ -34,7 +34,7 @@ departmentRouter.delete("/delete/:id", deleteDepartment);
 
 // Queue management routes
 departmentRouter.get("/:id/queue", getDepartmentQueue);
-departmentRouter.post("/:id/join-queue", authUser, joinDepartmentQueue);
+departmentRouter.post("/:id/join-queue", joinDepartmentQueue);
 departmentRouter.put("/visit/:visitId/status", updateVisitStatus);
 
 // Visit memo routes
